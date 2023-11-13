@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+        <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+        <Title>Объект</Title>
+    </head>
+    <body>
+        <style>
+            body {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 0px;
+                margin: 0px;
+                height: 100vh;
+                width: 100vw;
+                align-items: center;
+                background-color: #404040;
+            }
+            .photo_description{
+                width: 500px;
+                border: 1px solid grey;
+            }
+            .photo{
+                width: 400px;
+                height: 400px;
+                background-color: #272727;
+            }
+            .description{
+                margin-top: 20px;
+                width: 400px;
+                min-height:20px;
+                background-color: #272727;
+            }
+            .general_info{
+                width: 400px;
+                height: 400px;
+                background-color: #272727;
+                margin-left: 20px;
+                border-radius: 10px;
+                padding-left: 20px;
+                color: white;
+                font-size: 18px;
+                margin-top: 20px;
+            }
+            header{
+                height: 80px;
+                width: 100vw;
+                display: flex;
+                justify-content: space-around;
+                background-color: #272727;
+                align-items: center;
+
+            }
+            .btn{
+                height: 43px;
+                width: 200px;
+                border-radius: 10px;
+                background-color: rgba(0,0,0,0);
+                color: white;
+                font-size: 18px;
+            }
+            .btn:hover{
+                background-color: #3AB2C3;
+                color: white;
+                font-size: 18px;
+            }
+            footer{
+                height: 80px;
+                width: 100vw;
+                display: flex;
+                justify-content: space-around;
+                background-color: #272727;
+                align-items: center;
+                color: white;
+                font-size: 18px;
+                margin-top: 20px;
+            }
+            .content{
+                width: 80vw;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                border:1px solid grey;
+                align-items: flex-start;
+            }
+        </style>
+        <header>
+            <a href=""><button class = "btn">title</button></a>
+            <a href=""><button class = "btn">title</button></a>
+            <a href=""><button class = "btn">title</button></a>
+            <a href=""><button class = "btn">title</button></a>
+        </header>
+        <div class="content">
+            <div class="general_info">
+                <p>id:</p>
+                <p>Пользователь:</p>
+                <p>Дата:</p>
+                <p>Статус:</p>
+            </div>
+            <div class = "photo_description">
+                <div class = "photo">
+                    <img src = "#" alt="Здесь должна быть картинка">
+                </div>
+                <div class = "description">Описание:</div>
+            </div>
+        </div>
+        <footer>
+            <a>О нас</a>
+            <a>Контакты</a>
+            <a>Адрес</a>
+            <a>Партнерам</a>
+        </footer>
+    </body>
+</html>

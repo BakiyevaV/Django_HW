@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+        <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+        <Title>Главная страница</Title>
+    </head>
+    <body>
+        <style>
+            body{
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 0px;
+                margin: 0px;
+                height: 100vh;
+                width: 100vw;
+                align-items: center;
+                background-color: #404040;
+            }
+            header{
+                height: 80px;
+                width: 100vw;
+                display: flex;
+                justify-content: space-around;
+                background-color: #272727;
+                align-items: center;
+
+            }
+            .btn{
+                height: 43px;
+                width: 200px;
+                border-radius: 10px;
+                background-color: rgba(0,0,0,0);
+                color: white;
+                font-size: 18px;
+            }
+            .btn:hover{
+                background-color: #3AB2C3;
+                color: white;
+                font-size: 18px;
+            }
+            footer{
+                height: 80px;
+                width: 100vw;
+                display: flex;
+                justify-content: space-around;
+                background-color: #272727;
+                align-items: center;
+                color: white;
+                font-size: 18px;
+                margin-top: 20px;
+            }
+            .content{
+                height: 800px;
+                width: 75vw;
+                overflow-y: scroll;
+                overflow-x: hidden;
+                background-color: #272727;
+                margin-top: 20px;
+                border-radius: 10px;
+            }
+            .row{
+                height: 40px;
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                border-bottom: 1px solid #d4d4d4;
+                color: white;
+                line-height: 37px;
+            }
+            .trow{
+                height: 40px;
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                background-color: #4f4f4f;
+                color: white;
+                line-height: 37px;
+                border-radius: 10px;
+            }
+            .no{
+                width: 100px;
+                text-align: center;
+            }
+            .title{
+                width: 860px;
+            }
+            .user{
+                width: 250px;
+                text-align: center;
+            }
+            .stat{
+                width: 200px;
+                text-align: center;
+            }
+            a{
+                color: white;
+            }
+            footer a:hover{
+                color: #3AB2C3;
+            }
+        </style>
+        <header>
+            <a href=""><button class = "btn">title</button></a>
+            <a href=""><button class = "btn">title</button></a>
+            <a href=""><button class = "btn">title</button></a>
+            <a href=""><button class = "btn">title</button></a>
+        </header>
+        <div class = "content">
+            <table>
+                <thead>
+                    <tr class="trow">
+                        <td class = "no">No</td>
+                        <td class = "title">Фраза</td>
+                        <td class = "user">Пользователь</td>
+                        <td class = "stat">Статус</td>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for item in context %}
+                   <tr class="row">
+                       <td class = "no">{{item.id}}</td>
+                       <td class = "title"><a href="{% url 'object_passport' parameter=item.id %}">{{item.title}}</a></td>
+                       <td class = "user"><a href="{% url 'object_passport' parameter=item.id %}">{{item.userId}}</a></td>
+                       <td class = "stat">{{item.completed}}</td>
+                   </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <footer>
+            <a>О нас</a>
+            <a>Контакты</a>
+            <a>Адрес</a>
+            <a>Партнерам</a>
+        </footer>
+    </body>
+</html>
