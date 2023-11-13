@@ -9,20 +9,11 @@ def index(request):
     new_data = sorted(data, key=lambda x: x["title"], reverse=False)
     global context
     context = {"context": new_data}
-    print(context)
-    obj = context["context"]
-    n = None
-    for item in obj:
-        if item['id'] == 105:
-            n = item
-
-    print("Y",n)
     return render(request,'index.html',context)
-
-def object_passport(request,parameter):
+def object_passport(request, param):
     obj = context["context"]
     object = None
     for item in obj:
-        if item[parameter] == 105:
+        if item["userId"] == param:
             object = item
-    return render(request,'object_passport.html',object)
+    return render(request,'object_passport.html', object)

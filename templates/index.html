@@ -123,8 +123,8 @@
                 {% for item in context %}
                    <tr class="row">
                        <td class = "no">{{item.id}}</td>
-                       <td class = "title"><a href="{% url 'object_passport' parameter=item.id %}">{{item.title}}</a></td>
-                       <td class = "user"><a href="{% url 'object_passport' parameter=item.id %}">{{item.userId}}</a></td>
+                       <td class = "title"><a href='{% url "object_passport" param=item.id %}'>{{item.title}}</a></td>
+                       <td class = "user"><a href='{% url "object_passport" param=item.id %}'>{{item.userId}}</a></td>
                        <td class = "stat">{{item.completed}}</td>
                    </tr>
                 {% endfor %}
