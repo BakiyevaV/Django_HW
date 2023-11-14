@@ -11,9 +11,10 @@ def index(request):
     context = {"context": new_data}
     return render(request,'index.html',context)
 def object_passport(request, param):
-    obj = context["context"]
+    r = requests.get('https://jsonplaceholder.typicode.com/todos/')
+    data = r.json()
     object = None
-    for item in obj:
-        if item["userId"] == param:
+    for item in data:
+        if item["id"] == param:
             object = item
-    return render(request,'object_passport.html', object)
+    return render(request,'object_passport.html', {"object":object})

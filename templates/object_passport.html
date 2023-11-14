@@ -21,19 +21,35 @@
                 background-color: #404040;
             }
             .photo_description{
+                margin-top: 20px;
                 width: 500px;
-                border: 1px solid grey;
+                border: 1px solid #4f4f4f;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+                border-radius: 10px;
+
             }
             .photo{
                 width: 400px;
                 height: 400px;
                 background-color: #272727;
+                border-radius: 10px;
             }
             .description{
                 margin-top: 20px;
-                width: 400px;
+                width: 460px;
                 min-height:20px;
                 background-color: #272727;
+                padding-top: 20px;
+                padding-left: 20px;
+                padding-right: 20px;
+                padding-bottom: 20px;
+                border-radius: 10px;
+                color: white;
+                font-size: 18px;
+
             }
             .general_info{
                 width: 400px;
@@ -80,11 +96,10 @@
                 margin-top: 20px;
             }
             .content{
-                width: 80vw;
+                width: 60vw;
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
-                border:1px solid grey;
                 align-items: flex-start;
             }
         </style>
@@ -96,16 +111,16 @@
         </header>
         <div class="content">
             <div class="general_info">
-                <p>id:</p>
-                <p>Пользователь:</p>
+                <p>id: {{object.id}}</p>
+                <p>Пользователь {{object.userId}}:</p>
                 <p>Дата:</p>
-                <p>Статус:</p>
+                <p>Статус: {{object.completed}}</p>
             </div>
             <div class = "photo_description">
                 <div class = "photo">
                     <img src = "#" alt="Здесь должна быть картинка">
                 </div>
-                <div class = "description">Описание:</div>
+                <div class = "description">Описание: {{object.title}}</div>
             </div>
         </div>
         <footer>
