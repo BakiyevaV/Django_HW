@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Люди</title>
+    <style>
+    </style>
+</head>
+<body>
+{% for human in people %}
+    <p>ФИО: {{human.name}}</p>
+    <p>Пол: {{human.gender}}</p>
+    <p>Возраст:{{human.age}}</p>
+    {% for child in human.children %}
+    <p>Дети:<a href='{% url "get_child" param=child %}'>{{child}}</a></p>
+    {% endfor %}
+{% endfor %}
+</body>
+</html>
