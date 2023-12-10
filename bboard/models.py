@@ -135,9 +135,11 @@ class Bb(models.Model):
 
     def id_title(self):
         return f"{self.pk}_{self.title}"
+        
     def id_price(self):
         sum = self.pk+self.price
         return sum
+        
     def new_id(self):
         return f"id{self.pk}"
 
