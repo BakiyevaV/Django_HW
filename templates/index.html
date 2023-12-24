@@ -1,0 +1,18 @@
+{% extends "layout/basic.html" %}
+
+{% block content %}
+<div class="grid">
+{% for bb in bbs %}
+    <div class = 'content'>
+        <h1>{{ bb.title}}</h1>
+        <h2>{{ bb.new_id}}</h2>
+        <h2>{{ bb.id_title}}</h2>
+        <p>{{ bb.content }}</p>
+        <p>
+            <a href="{% url 'bboard:by_rubric' bb.rubric.pk %}">{{ bb.rubric.name }}</a>
+        </p>
+        <p>{{ bb.published|date:"d.m.Y H:i:s" }}</p>
+    </div>
+{% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Главная{% endblock %} :: Доска объявлений</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body class = 'body'>
+    <header>
+        <a href="{% url 'bboard:add' %}">Подать объявление</a>
+        <a href="{% url 'registration' %}">Вход и регистрация</a>
+    </header>
+    <div class = 'rubrics'>
+     {% for rubric in rubrics %}
+        <a href="{#% url 'bboard:by_rubric' rubric.pk %#}{{ rubric.get_absolute_url }}">{{ rubric }} ({{rubric.cnt}})</a>
+    {% endfor %}
+    </div>
+    <div class = "main">
+        <div class = 'top_ann'>Ваши объявления могут быть в топе</div>
+        <section>
+            {% block content %}
+            {% endblock %}
+        </section>
+        <div class = 'advert'>Здесь может быть ваша реклама</div>
+    </div>
+    <footer>
+        <div class = 'info'>
+            <a href="{% url 'bboard:about'%}">About</a>
+            <a href="{% url 'bboard:contacts' %}">Contacts</a>
+        </div>
+        <p class="text">Крупнейший онлайн-сервис объявлений.Здесь вы найдете то, что искали! Нажав на кнопку "Подать объявление", вы сможете разместить объявление на любую тематику легко и быстро.
+        С помощью нащшего сервиса вы сможете купить или продать из рук в руки практически все, что угодно.</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>About Us</title>
+</head>
+<body style = "background-color: #1b1b1b;color: white;">
+    <header>
+        <a href="{% url 'index' %}">Главная страница</a>
+    </header>
+    {% for str in content%}
+    <p style = "font-size: 20px;">{{str}}</p>
+    {% endfor %}
+</body>
+</html>
