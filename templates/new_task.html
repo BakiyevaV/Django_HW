@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить задачу</title>
+</head>
+<body class = 'body'>
+    <header>
+        <a href="{% url 'taskboard:all_tasks' %}">Все задачи</a>
+    </header>
+    <h2>Добавить задачу</h2>
+    <form  method = "post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Добавить">
+    </form>
+</body>
+</html>
+

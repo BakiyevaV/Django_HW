@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Все задачи</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body class = 'body'>
+    <header>
+        <a href="{% url 'taskboard:create_task' %}">Добавить задачу</a>
+        <a href="{% url 'taskboard:all_tasks' %}">Все задачи</a>
+    </header>
+    <div style = "display: flex; flex-direction: row; align-items: center;">
+        <p style = "margin-right: 10px;">Исполнитель: </p>
+        <div class = "wrapper">{{task.implementer}}</div>
+    </div>
+    <div style = "display: flex; flex-direction: row; align-items: center;">
+        <p style = "margin-right: 10px;">Наименование: </p>
+        <div class = "wrapper">{{task.title}}</div>
+    </div>
+    <div style = "display: flex; flex-direction: row; align-items: center;">
+        <p style = "margin-right: 10px;">Описание: </p>
+        <div class = "wrapper">{{task.description}}</div>
+    </div>
+    <div style = "display: flex; flex-direction: row; align-items: center;">
+        <p style = "margin-right: 10px;">Срок исполнения: </p>
+        <div class = "wrapper">{{task.deadline|date:"Y-m-d"}}</div>
+    </div>
+    <div style = "display: flex; flex-direction: row; align-items: center;">
+        <p style = "margin-right: 10px;">Дата создания: </p>
+        <div class = "wrapper">{{task.published}}</div>
+    </div>
+    <p style = "margin-right: 10px;">Статус: </p>
+    <form method="post" action="{% url 'taskboard:about_task' task.pk %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Сохранить</button>
+    </form>
+    <form method="post" action="{% url 'taskboard:delete_task' task.pk %}" style="display:inline;">
+        {% csrf_token %}
+        <button style = "margin-top: 20px;" type="submit" onclick="return confirm('Вы уверены, что хотите удалить задачу?')">Удалить задачу</button>
+    </form>
+    <div style = "display: flex; flex-direction: row; align-items: center;">
+        <p style = "margin-right: 10px;">Дата закрытия: </p>
+        <div class = "wrapper">{{task.done_date}}</div>
+    </div>
+</body>
+</html>
