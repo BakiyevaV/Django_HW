@@ -89,21 +89,14 @@ class DeleteComment(DeleteView):
     template_name = 'bb.html'
     pk_url_kwarg = 'bb_id'
     def get_success_url(self):
-        # Redirect to the detail view of the associated Bb after deleting the comment
         bb_id = self.kwargs['bb_id']
         return reverse('bboard:get_detail', args=[bb_id])
     def get_object(self, queryset=None):
-        # Retrieve the comment using the comment_id and bb_id
         print(get_object_or_404(Comments, pk=self.kwargs['comment_id']))
         print("айди", self.kwargs['bb_id'])
         return get_object_or_404(Comments, pk=self.kwargs['comment_id'])
-    def post(self, request, comment_id, bb_id, *args, **kwargs):
-        comment = get_object_or_404(Comments, pk=comment_id)
-        comment.delete()
-        return redirect(reverse('bboard:get_detail', args=[bb_id]))
-def delete_comment(request, comment_id, bb_id):
-    Comments.objects.filter(pk=comment_id).delete()
-    return redirect(reverse('bboard:get_detail', args=[bb_id]))
+
+
 
 
 
