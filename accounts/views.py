@@ -74,16 +74,6 @@ def decoder(value):
         return dict(value)
     return value
 
-class AllUsersView(ListView):
-    template_name = 'users.html'
-    model = Clients
-    context_object_name = 'users'
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        print(Clients.objects.all())
-        context['users'] = Clients.objects.all()
-        return context
-
 class AllUsersView(ArchiveIndexView):
     model = Clients
     template_name = 'users.html'
