@@ -25,3 +25,7 @@ class Tasks(models.Model):
         ordering = ['-status','-deadline']
 
 
+class Subscribes(models.Model):
+    email = models.CharField(max_length=30, verbose_name="Mейл")
+
+
