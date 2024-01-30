@@ -59,8 +59,10 @@
                             <!-- Product Meta Data -->
                             <div class="product-meta-data">
                                 <div class="line"></div>
+                                <p>{{task.published}} - (создано {{task.published|timesince}} назад)</p>
+                                <p>до окончания срока - {{task.deadline|timeuntil}}</p>
                                 <a href="{% url 'taskboard:about_task' task.pk %}">
-                                    <h6>{{task.title}}</h6>
+                                    <h6>{{task.title|capfirst}}</h6>
                                 </a>
                                 <!-- Ratings & Review -->
                                 <div class="ratings-review mb-15 d-flex align-items-center justify-content-between">
@@ -75,9 +77,18 @@
                                 <p class="avaibility"><i class="fa fa-circle"></i>{% if task.status == 'n' or task.status == 'p'%} Available to do {% else %} Done {% endif %}</p>
                             </div>
 
+                            {% filter upper %}
                             <div class="short_overview my-5">
-                                <p>{{task.description}}</p>
+                                {% if task.description %}
+                                    <p>{{task.description|cut:" "}} - {{task.description|cut:" "|length}}</p>
+                                {% else %}
+                                    {% lorem 1 p random %}
+                                {% endif %}
                             </div>
+                            {% endfilter %}
+
+                            <p>Done date: {{task.done_date|default:"not finished"}}</p>
+
                             <form method="POST">
                                 {% csrf_token %}
                                 <select class="w-100" name="status">

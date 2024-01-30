@@ -37,27 +37,36 @@
                                             <a href="{% url 'taskboard:about_task' task.pk %}"><img src="{% static 'img/img_.jpg' %}"></a>
                                         </td>
                                         <td class="cart_product_desc">
-                                            <a href="{% url 'taskboard:about_task' task.pk%}"><h5>{{task.title}}</h5></a>
+                                            <a href="{% url 'taskboard:about_task' task.pk%}"><h5>{{task.title|capfirst}}</h5></a>
                                         </td>
                                         <td class="price">
-                                            <a href="{% url 'taskboard:about_task' task.pk%}"><span>To: {{task.deadline|date:"Y-m-d"}}</span></a>
+                                            <a href="{% url 'taskboard:about_task' task.pk%}"><span>To: {{task.deadline|date:"d-m-Y"}}</span></a>
                                         </td>
                                         <td class="qty">
                                             <a href="{% url 'taskboard:about_task' task.pk%}"><span>Status: {{task.get_status_display}}</span></a>
                                         </td>
                                     </tr>
+                                    {% empty %}
+                                    No available task
                                     {% endfor %}
+
+                                    {% comment %}
+                                    {% for task in tasks %}
+                                         {% firstof task "<strong>no available tasks<strong>" %}
+                                    {% endfor %}
+                                    {% endcomment  %}
+
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     <div class="col-12 col-lg-4">
                         <div class="cart-summary">
-                            <h5>Total count: {{total_tasks_count}}</h5>
+                            <h5>Total count: {{total_tasks_count|add:"1"}}</h5>
                             <ul class="summary-table">
-                                <li><span>not started:</span> <span>{{not_started_tasks_count}}</span></li>
-                                <li><span>in progress:</span> <span>{{in_process_tasks_count}}</span></li>
-                                <li><span>done:</span> <span>{{done_tasks_count}}</span></li>
+                                <li><span>not started:</span> <span>{{not_started_tasks_count|add:"1"}}</span></li>
+                                <li><span>in progress:</span> <span>{{in_process_tasks_count|add:"1"}}</span></li>
+                                <li><span>done:</span> <span>{{done_tasks_count|add:"1"}}</span></li>
                             </ul>
                         </div>
                     </div>

@@ -17,6 +17,7 @@ def create_task(request):
         title = request.POST.get('title')
         deadline = request.POST.get('deadline')
         description = request.POST.get('description')
+        print(description)
         task = Tasks(implementer=implementer, author=author, title=title,
                      deadline=deadline, description=description)
 
