@@ -31,8 +31,9 @@ def create_task(request):
     in_process_tasks_count = tasks.filter(status="p").count()
     context = {'tasks': tasks, 'total_tasks_count': total_tasks_count,
                    'not_started_tasks_count': not_started_tasks_count,
-                   'done_tasks_count': done_tasks_count, 'in_process_tasks_count': in_process_tasks_count}
-    return render(request, 'new_task.html',context)
+                   'done_tasks_count': done_tasks_count, 'in_process_tasks_count': in_process_tasks_count,
+               'active_page': 'create task', 'title': 'Create new task'}
+    return render(request, 'new_task.html', context)
 
 def get_all_tasks(request):
     model = Tasks
@@ -42,7 +43,8 @@ def get_all_tasks(request):
     done_tasks_count = tasks.filter(status="d").count()
     in_process_tasks_count = tasks.filter(status="p").count()
     context = {'tasks': tasks, 'total_tasks_count': total_tasks_count, 'not_started_tasks_count':not_started_tasks_count,
-               'done_tasks_count': done_tasks_count,  'in_process_tasks_count': in_process_tasks_count}
+               'done_tasks_count': done_tasks_count,  'in_process_tasks_count': in_process_tasks_count,
+               'active_page': 'all tasks', 'title': 'All tasks'}
     return render(request, 'index.html', context)
 
 
@@ -66,7 +68,7 @@ def about_task(request, task_id):
             return redirect(reverse('taskboard:about_task', args=[task_id]))
     else:
         form = StatusForm(instance=task)
-    context = {'task': task, 'form': form}
+    context = {'task': task, 'form': form , 'title': 'About task'}
     return render(request, 'product-details.html', context)
 
 def delete_task(request, task_id):
