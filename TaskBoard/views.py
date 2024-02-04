@@ -1,3 +1,5 @@
+from django.core.paginator import Paginator
+
 from .models import Tasks, Subscribes
 from .forms import TaskForm, StatusForm
 from django.views.decorators.http import require_http_methods
@@ -42,9 +44,15 @@ def get_all_tasks(request):
     not_started_tasks_count = tasks.filter(status="n").count()
     done_tasks_count = tasks.filter(status="d").count()
     in_process_tasks_count = tasks.filter(status="p").count()
-    context = {'tasks': tasks, 'total_tasks_count': total_tasks_count, 'not_started_tasks_count':not_started_tasks_count,
-               'done_tasks_count': done_tasks_count,  'in_process_tasks_count': in_process_tasks_count,
-               'active_page': 'all tasks', 'title': 'All tasks'}
+    paginator = Paginator(tasks, per_page=2, orphans=0)
+    if 'page' in request.GET:
+        page_num = request.GET['page']
+    else:
+        page_num = 1
+    page = paginator.get_page(page_num)
+    context = {'tasks': page.object_list, 'page_obj': page, 'total_tasks_count': total_tasks_count,
+               'not_started_tasks_count': not_started_tasks_count, 'done_tasks_count': done_tasks_count,
+               'in_process_tasks_count': in_process_tasks_count, 'active_page': 'all tasks', 'title': 'All tasks'}
     return render(request, 'index.html', context)
 
 

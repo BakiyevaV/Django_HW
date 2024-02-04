@@ -1152,7 +1152,11 @@ img {
     margin-left: 0;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0; }
-
+.pagination_wrapper{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
 /* :: 8.0 Footer Area CSS */
 .footer_area {
   position: relative;
