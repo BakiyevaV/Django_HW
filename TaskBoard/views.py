@@ -1,7 +1,8 @@
+from django.core.exceptions import NON_FIELD_ERRORS
 from django.core.paginator import Paginator
 
-from .models import Tasks, Subscribes
-from .forms import TaskForm, StatusForm
+from .models import Tasks, Subscribes, Icecream
+from .forms import TaskForm, StatusForm, CaptchaTestForm, IcecreamForm
 from django.views.decorators.http import require_http_methods
 
 from django.shortcuts import render, redirect
@@ -14,28 +15,50 @@ import datetime
 @require_http_methods(['GET', 'POST'])
 def create_task(request):
     if request.method == 'POST':
-        implementer = request.POST.get('implementer')
-        author = request.POST.get('author')
-        title = request.POST.get('title')
-        deadline = request.POST.get('deadline')
-        description = request.POST.get('description')
-        print(description)
-        task = Tasks(implementer=implementer, author=author, title=title,
-                     deadline=deadline, description=description)
-
-        task.save()
-        return redirect('taskboard:all_tasks')
-
+        form = TaskForm(request.POST)
+        cap_form = CaptchaTestForm(request.POST)
+        if form.is_valid() and cap_form.is_valid():
+            form.save()
+            return redirect('taskboard:all_tasks')
+    else:
+        form = TaskForm()
+        cap_form = CaptchaTestForm()
     tasks = Tasks.objects.all()
     total_tasks_count = tasks.count()
     not_started_tasks_count = tasks.filter(status="n").count()
     done_tasks_count = tasks.filter(status="d").count()
     in_process_tasks_count = tasks.filter(status="p").count()
-    context = {'tasks': tasks, 'total_tasks_count': total_tasks_count,
-                   'not_started_tasks_count': not_started_tasks_count,
-                   'done_tasks_count': done_tasks_count, 'in_process_tasks_count': in_process_tasks_count,
-               'active_page': 'create task', 'title': 'Create new task'}
+
+    context = {'form': form, 'tasks': tasks, 'total_tasks_count': total_tasks_count,
+                'not_started_tasks_count': not_started_tasks_count,
+                'done_tasks_count': done_tasks_count, 'in_process_tasks_count': in_process_tasks_count,
+                'active_page': 'create task', 'title': 'Create new task', 'cap_form': cap_form}
     return render(request, 'new_task.html', context)
+
+    # if request.method == 'POST':
+    #     implementer = request.POST.get('implementer')
+    #     author = request.POST.get('author')
+    #     title = request.POST.get('title')
+    #     deadline = request.POST.get('deadline')
+    #     description = request.POST.get('description')
+    #     print(description)
+    #     task = Tasks(implementer=implementer, author=author, title=title,
+    #                  deadline=deadline, description=description)
+    #
+    #     task.save()
+    #     return redirect('taskboard:all_tasks')
+    #
+    # tasks = Tasks.objects.all()
+    # total_tasks_count = tasks.count()
+    # not_started_tasks_count = tasks.filter(status="n").count()
+    # done_tasks_count = tasks.filter(status="d").count()
+    # in_process_tasks_count = tasks.filter(status="p").count()
+    # context = {'tasks': tasks, 'total_tasks_count': total_tasks_count,
+    #                'not_started_tasks_count': not_started_tasks_count,
+    #                'done_tasks_count': done_tasks_count, 'in_process_tasks_count': in_process_tasks_count,
+    #            'active_page': 'create task', 'title': 'Create new task'}
+    # return render(request, 'new_task.html', context)
+
 
 def get_all_tasks(request):
     model = Tasks
@@ -89,6 +112,35 @@ def save_subscribes(request):
         subscribe = Subscribes(email=email)
         subscribe.save()
         return redirect('taskboard:all_tasks')
+
+
+def create_icecream(request):
+    if request.method == 'POST':
+        icecream_form = IcecreamForm(request.POST)
+        cap_form = CaptchaTestForm(request.POST)
+        if icecream_form.is_valid() and cap_form.is_valid():
+            icecream_form.save()
+            return redirect('taskboard:icecream')
+    else:
+        icecream_form = IcecreamForm()
+        cap_form = CaptchaTestForm()
+    context = {'icecream_form': icecream_form, 'cap_form': cap_form, 'active_page': 'create icecream',
+                   'title': 'Create icecream'}
+    return render(request, 'create_icecream.html', context)
+
+def get_icecream(request):
+    icecream = Icecream.objects.all()
+    paginator = Paginator(icecream, per_page=2, orphans=0)
+    if 'page' in request.GET:
+        page_num = request.GET['page']
+    else:
+        page_num = 1
+    page = paginator.get_page(page_num)
+    context = {'icecream': icecream, 'page_obj': page, 'active_page': 'icecream', 'title': 'Icecream'}
+    return render(request, 'index.html', context)
+
+
+
 
 
 

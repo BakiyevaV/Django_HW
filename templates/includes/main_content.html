@@ -11,31 +11,29 @@
 
                         <form action="{% url 'taskboard:create_task' %}" method="POST">
                             {% csrf_token %}
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <input type="text" class="form-control" name="implementer" value=""
-                                           placeholder="Implementer">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <input type="text" class="form-control" name="author" value="" placeholder="Author">
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <input type="text" class="form-control" name="title" placeholder="Title" value="">
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label>Deadline</label>
-                                    <input type="date" class="form-control" name="deadline" placeholder="Deadline"
-                                           value="">
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <input type="text" class="form-control w-100" name="description" cols="30" rows="10"
-                                           placeholder="Description"></input>
-                                </div>
-                                <button style="margin-right: 20px; margin-left: 13px" class="btn amado-btn mb-15"
-                                        type="submit">Create
-                                </button>
-                                <a href="{% url 'taskboard:all_tasks' %}" class="btn amado-btn active">Cancel</a>
+                            {{ form.as_p }}
+                            {{ cap_form.as_p }}
+                            {% if cap_form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in cap_form.non_field_errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
                             </div>
+                            {% endif %}
+                            {% for field in cap_form %}
+                                {% if field.errors %}
+                                    <div class="alert alert-danger">
+                                        {% for error in field.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+
+                            <button style="margin-right: 20px; margin-left: 13px" class="btn amado-btn mb-15"
+                                    type="submit">Create
+                            </button>
+                            <a href="{% url 'taskboard:all_tasks' %}" class="btn amado-btn active">Cancel</a>
                         </form>
                     </div>
                 </div>
@@ -217,6 +215,97 @@
                             </button>
                         </form>
                         <a href="{% url 'taskboard:delete_task' task.pk %}" class="btn amado-btn active">Delete task</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% elif title == 'Create icecream' %}
+<div class="cart-table-area section-padding-100">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 col-lg-8">
+                    <div class="checkout_details_area mt-50 clearfix">
+                        <div class="cart-title">
+                            <h2>Create Task</h2>
+                        </div>
+
+                        <form action="{% url 'taskboard:create_icecream' %}" method="POST">
+                            {% csrf_token %}
+
+                            {{ icecream_form.as_ul }}
+                            {{ cap_form.as_p }}
+                            {% if cap_form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in cap_form.non_field_errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            {% for field in cap_form %}
+                                {% if field.errors %}
+                                    <div class="alert alert-danger">
+                                        {% for error in field.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+
+                            <button style="margin-right: 20px; margin-left: 13px" class="btn amado-btn mb-15"
+                                    type="submit">Create
+                            </button>
+                            <a href="{% url 'taskboard:icecream' %}" class="btn amado-btn active">Cancel</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% elif title == 'Icecream' %}
+    <div class="cart-table-area section-padding-100">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 col-lg-8">
+                    <div class="cart-title mt-50">
+                        <h2>Icecream</h2>
+                    </div>
+
+                    <div class="cart-table clearfix">
+                        <table class="table table-responsive">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>Наименование</th>
+                                <th>Производитель</th>
+                                <th>Стоимость</th>
+                                <th>Вес нетто</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for iccrm in icecream %}
+                            <tr>
+                                <td class="cart_product_img">
+                                    <img src="{% static 'img/img_.jpg' %}">
+                                </td>
+                                <td class="cart_product_desc">
+                                    <h5>{{ iccrm.name|capfirst }}</h5>
+                                </td>
+                                <td class="price">
+                                    <h5>{{ iccrm.fabricator|capfirst }}</h5>
+                                </td>
+                                <td class="qty">
+                                    <h5>{{ iccrm.price|capfirst }}</h5>
+                                </td>
+                                    <h5>{{ task.weight|capfirst }}</h5>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            No available icecream
+                            {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
