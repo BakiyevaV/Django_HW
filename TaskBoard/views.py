@@ -2,7 +2,7 @@ from django.core.exceptions import NON_FIELD_ERRORS
 from django.core.paginator import Paginator
 
 from .models import Tasks, Subscribes, Icecream
-from .forms import TaskForm, StatusForm, CaptchaTestForm, IcecreamForm
+from .forms import TaskForm, StatusForm, CaptchaTestForm, IcecreamForm, TaskEditFormset
 from django.views.decorators.http import require_http_methods
 
 from django.shortcuts import render, redirect
@@ -121,6 +121,13 @@ def create_icecream(request):
         if icecream_form.is_valid() and cap_form.is_valid():
             icecream_form.save()
             return redirect('taskboard:icecream')
+        else:
+            icecream_form = IcecreamForm(request.POST)
+            cap_form = CaptchaTestForm(request.POST)
+            print('не проходит')
+            context = {'message':'Введены некорректные данные', 'title': 'Create icecream', 'icecream_form': icecream_form, 'cap_form': cap_form, 'active_page': 'create icecream'}
+            return render(request, 'create_icecream.html', context)
+
     else:
         icecream_form = IcecreamForm()
         cap_form = CaptchaTestForm()
@@ -138,6 +145,43 @@ def get_icecream(request):
     page = paginator.get_page(page_num)
     context = {'icecream': icecream, 'page_obj': page, 'active_page': 'icecream', 'title': 'Icecream'}
     return render(request, 'index.html', context)
+def edit_task(request):
+    model = Tasks
+    if request.method == 'POST':
+        formset = TaskEditFormset(request.POST,  queryset=model.objects.all())
+        for form in formset.forms:
+            if form.instance.deadline:
+                form.initial['deadline'] = form.instance.deadline.strftime('%Y-%m-%d')
+            if form.instance.done_date:
+                form.initial['done_date'] = form.instance.done_date.strftime('%Y-%m-%d')
+        if formset.is_valid():
+            formset.save()
+            context = {'message': 'Изменения приняты', 'formset': formset, 'title': 'Edit task',
+                       'active_page': 'Edit task'}
+            return render(request, 'edit_task.html', context)
+        else:
+            context = {'message': 'Введены некорректные данные', 'formset': formset, 'title': 'Edit task',
+                       'active_page': 'Edit task'}
+            return render(request, 'edit_task.html', context)
+    else:
+        formset = TaskEditFormset(queryset=model.objects.all())
+        for form in formset.forms:
+            if form.instance.deadline:
+                form.initial['deadline'] = form.instance.deadline.strftime('%Y-%m-%d')
+            if form.instance.done_date:
+                form.initial['done_date'] = form.instance.done_date.strftime('%Y-%m-%d')
+        context = {'formset': formset, 'title': 'Edit task', 'active_page': 'Edit task'}
+        return render(request, 'edit_task.html', context)
+
+
+
+
+
+
+
+
+
+
 
 
 
