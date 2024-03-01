@@ -1,0 +1,43 @@
+{% extends "layout/basic.html" %}
+{% load bbcode_tags %}
+{% load filtertags %}
+{% load thumbnail %}
+
+{% block content %}
+    
+{#    {% lst ', ' '1' '2' '3' '4' '5' %}#}
+    
+    {% ulist '1' '2' '3' '4' '5' %}
+    
+{% for bb in bbs %}
+<div>
+    <h2>
+        <a href="{% url 'bboard:detail' bb.pk %}">
+{#            {{ forloop.counter0|add:page.start_index }} - {{ bb.title_and_price }}</a>#}
+            {{ forloop.counter0|add:page_obj.start_index }} - {{ bb.title_and_price }}</a>
+    </h2>
+
+    <img src="{{ bb.picture|thumbnail_url:'default' }}" alt="">
+    <p>{{ bb.content|bbcode|safe }}</p>
+    
+    {% autoescape on %}
+        <p>Цена: {{ bb.price|cur }}</p>
+        <p>Цена: {{ bb.price|cur:'руб.' }}</p>
+    {% endautoescape %}
+    
+    <p>
+        <a href="{% url 'bboard:by_rubric' bb.rubric.pk %}">
+            {{ bb.rubric.name }}</a>
+    </p>
+
+    <p>{{ bb.published|date:"d.m.Y H:i:s" }}</p>
+
+</div>
+{% empty %}
+    <p>Объявлений нет!!!</p>
+{% endfor %}
+    
+{% include 'includes/inc_paginator.html' %}
+{#{% include 'includes/inc_paginator_cbv.html' %}#}
+    
+{% endblock content %}

@@ -1,0 +1,20 @@
+<nav>
+    <a href="{% url 'bboard:index' %}">Главная</a>
+{#    {% if 'bboard.add_bb' in perms %}#}
+    {% if perms.bboard.add_bb %}
+        <a href="{% url 'bboard:add' %}">Добавить</a>
+    {% else %}
+        <a href="{% url 'bboard:login' %}" class="text-danger">Войти</a>
+    {% endif %}
+{#{{ rubrics.0 }}#}
+    {% for rubric in rubrics %}
+        {% with bb_count=rubric.cnt %}
+        <a href="{{ rubric.get_absolute_url }}">
+{#            {{ rubric.name }} ({{ rubric.cnt }})</a>#}
+            {% filter upper %}
+                {{ rubric.name }}
+            {% endfilter %}
+            ({{ bb_count }})</a>
+        {% endwith %}
+    {% endfor %}
+</nav>

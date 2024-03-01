@@ -1,0 +1,16 @@
+{% extends "layout/basic.html" %}
+{% load bootstrap4 %}
+
+{% block title %}Изменение рубрик{% endblock %}
+
+{% block content %}
+<h2>Изменение рубрик</h2>
+    
+<form method="post">
+    {% csrf_token %}
+    
+    {% bootstrap_formset formset layout="inline" field_class="col-md-6" size="small" %}
+    {% buttons submit="Сохранить" reset="Сбросить" %}{% endbuttons %}
+
+</form>
+{% endblock %}

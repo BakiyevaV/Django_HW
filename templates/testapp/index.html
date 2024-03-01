@@ -1,0 +1,15 @@
+{% extends "layout/basic.html" %}
+{% load bbcode_tags %}
+{% load filtertags %}
+{% block title %}{{ title }}{% endblock title %}
+
+{% block content %}
+    {% for img in imgs %}
+        <div class="image">
+            <p>
+                <img src="{% url 'test:get' filename=img %}" alt="">
+            </p>
+        </div>
+    {% endfor %}
+
+{% endblock content %}
