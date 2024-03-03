@@ -1,3 +1,6 @@
+from django.contrib.auth.models import User
+from django.core import validators
+from django.core.exceptions import ValidationError
 from django.db import models
 
 class Tasks(models.Model):
@@ -54,6 +57,74 @@ class Icecream(models.Model):
         verbose_name_plural = 'Мороженое'
         verbose_name = 'Мороженое'
         ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+class Vendors(models.Model):
+    name = models.CharField(max_length=40, verbose_name="Наименование продавца")
+    address = models.CharField(max_length=200, verbose_name="Адрес")
+    number = models.CharField(max_length=200, verbose_name="Номер для связи", blank=True, null=True)
+    icecream_pl = models.ManyToManyField(Icecream, through='Vendors_Icecream', through_fields=('vendor',
+                                                                                               'icecream_position'))
+    class Meta:
+        verbose_name_plural = 'Продавцы'
+        verbose_name = 'Продавец'
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+class Vendors_Icecream(models.Model):
+    icecream_position = models.ForeignKey(Icecream, on_delete=models.CASCADE)
+    vendor = models.ForeignKey(Vendors, on_delete=models.CASCADE)
+    count = models.PositiveIntegerField(default=0)
+
+class PassValidator():
+    def __init__(self, password):
+        self.password = password
+    def check_item(self):
+        upper_count = 0
+        lower_count = 0
+        digit_count = 0
+        spec_signs_count = 0
+        signs = ["!", "@", "#", "$", "%", "^", "&", "*", "-", "+", "/"]
+        for letter in self.password:
+            if letter.isupper():
+                upper_count += 1
+            elif letter.islower():
+                lower_count += 1
+            elif letter.isdigit():
+                digit_count += 1
+            elif letter in signs:
+                spec_signs_count += 1
+        if upper_count > 0 and lower_count > 0 and digit_count > 0 and spec_signs_count > 0:
+            return True
+
+    def __call__(self, value):
+        if len(value) < 6 or not self.check_item():
+            raise ValidationError('Пароль должен содержать не менее 6 символов и не менее одной прописной буквы, строчной буквы, цифры и специального знака',
+                                  code='out_of_range', params={'password': value})
+
+
+class Clients(models.Model):
+    login = models.CharField(max_length=30, unique=True)
+    password = models.CharField(max_length=30, unique=True)
+    email = models.CharField(max_length=30, unique=True, validators=[validators.RegexValidator(regex='\w[\w\.-]*\w+@\w[\w\.]*\.[a-zA-Z]{2,3}')], error_messages= {'invalid':'Введите корректный адрес электронной почты'})
+    birth_date = models.DateField()
+    is_blocked = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name_plural = 'Пользователи'
+        verbose_name = 'Пользователь'
+
+class AdvUser(models.Model):
+    is_activated = models.BooleanField(default=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.username
+
 
 
 

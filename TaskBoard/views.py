@@ -144,6 +144,8 @@ def get_icecream(request):
         page_num = 1
     page = paginator.get_page(page_num)
     context = {'icecream': icecream, 'page_obj': page, 'active_page': 'icecream', 'title': 'Icecream'}
+
+
     return render(request, 'index.html', context)
 def edit_task(request):
     model = Tasks

@@ -1,10 +1,12 @@
+
 from django.core import validators
 from django.forms import ModelForm, modelform_factory, Form, modelformset_factory, BaseModelFormSet
-from .models import Tasks, Icecream
+from .models import Tasks, Icecream, Clients
 from django.forms.widgets import DateInput, Select
 from captcha.fields import CaptchaField
 from django.core.exceptions import ValidationError
 from datetime import date
+from django import forms
 
 def validate_price(val):
     if val <= 0:
@@ -60,3 +62,19 @@ class IcecreamForm(ModelForm):
 class CaptchaTestForm(Form):
     captcha = CaptchaField()
 
+
+class UserForm(ModelForm):
+    class Meta:
+        model = Clients
+        fields = ('login', 'password', 'email', 'birth_date')
+        widgets = {
+            'password': forms.PasswordInput(),
+            'birth_date': forms.SelectDateWidget()
+        }
+
+class LoginForm(forms.Form):
+    login = forms.CharField(max_length=30, )
+    password = forms.CharField(max_length=30)
+    class Meta:
+        model = Clients
+        fields = ('login', 'password')
