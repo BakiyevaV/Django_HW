@@ -48,6 +48,7 @@ class UserMiddleware:
 
     def __call__(self, request):
         return self._get_response(request)
+        
     def process_template_response(self, request, response):
         if request.user.is_authenticated:
             username = request.user.username
