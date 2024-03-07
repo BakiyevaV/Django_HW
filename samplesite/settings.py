@@ -55,6 +55,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'bboard.middlewares.my_middleware',
     # 'bboard.middlewares.RubricMiddleware'
+    # 'bboard.middlewares.UserMiddleware'
 ]
 
 ROOT_URLCONF = 'samplesite.urls'
@@ -69,10 +70,10 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth', #данные о User. Можно узнать что пользователь залогирован. User.is_authentificated
-
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.static',
-                'bboard.middlewares.rubrics'
+                'bboard.middlewares.rubrics',
+                'bboard.middlewares.user_context_proc'
             ],
         },
     },
