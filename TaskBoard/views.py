@@ -4,7 +4,7 @@ from django.core.paginator import Paginator
 from django.db.transaction import atomic
 
 from .models import Tasks, Subscribes, Icecream, LimitedEditionIcecream
-from .forms import TaskForm, StatusForm, IcecreamForm, TaskEditFormset
+from .forms import TaskForm, StatusForm, IcecreamForm, TaskEditFormset, SearchForm, CaptchaTestForm
 from django.views.decorators.http import require_http_methods
 from django.db import transaction
 
@@ -19,11 +19,13 @@ import datetime
 def create_task(request):
     if request.method == 'POST':
         form = TaskForm(request.POST)
-        if form.is_valid():
+        cap_form = CaptchaTestForm(request.POST)
+        if form.is_valid() and cap_form.is_valid():
             form.save()
             return redirect('taskboard:all_tasks')
     else:
         form = TaskForm()
+        cap_form = CaptchaTestForm()
     tasks = Tasks.actions.all()
     total_tasks_count = tasks.count()
     not_started_tasks_count = Tasks.actions.not_started_count()
@@ -33,7 +35,7 @@ def create_task(request):
     context = {'form': form, 'tasks': tasks, 'total_tasks_count': total_tasks_count,
                 'not_started_tasks_count': not_started_tasks_count,
                 'done_tasks_count': done_tasks_count, 'in_process_tasks_count': in_process_tasks_count,
-                'active_page': 'create task', 'title': 'Create new task'}
+                'active_page': 'create task', 'title': 'Create new task', 'cap_form': cap_form}
     return render(request, 'new_task.html', context)
 
     # if request.method == 'POST':
@@ -61,23 +63,68 @@ def create_task(request):
     # return render(request, 'new_task.html', context)
 
 
+# def get_all_tasks(request):
+#     model = Tasks
+#     total_tasks_count = Tasks.actions.count()
+#     not_started_tasks_count = Tasks.actions.not_started_count()
+#     done_tasks_count = Tasks.actions.done_count()
+#     in_process_tasks_count = Tasks.actions.in_progress_count()
+#     if request.method == 'POST':
+#         form = SearchForm(request.POST)
+#         if form.is_valid():
+#             keyword = form.cleaned_data['keyword']
+#             tasks = Tasks.actions.filter(title__icontains=keyword)
+#             paginator = Paginator(tasks, per_page=2, orphans=0)
+#             if 'page' in request.GET:
+#                 page_num = request.GET['page']
+#             else:
+#                 page_num = 1
+#             page = paginator.get_page(page_num)
+#             context = {'form': form, 'tasks': page.object_list, 'page_obj': page, 'total_tasks_count': total_tasks_count,
+#                        'not_started_tasks_count': not_started_tasks_count, 'done_tasks_count': done_tasks_count,
+#                        'in_process_tasks_count': in_process_tasks_count, 'active_page': 'all tasks',
+#                        'title': 'All tasks'}
+#             return render(request, 'index.html', context)
+#
+#     else:
+#         tasks = model.actions.order_by_title_length()
+#         paginator = Paginator(tasks, per_page=2, orphans=0)
+#         form = SearchForm()
+#         if 'page' in request.GET:
+#             page_num = request.GET['page']
+#         else:
+#             page_num = 1
+#         page = paginator.get_page(page_num)
+#         context = {'form': form, 'tasks': page.object_list, 'page_obj': page, 'total_tasks_count': total_tasks_count,
+#                    'not_started_tasks_count': not_started_tasks_count, 'done_tasks_count': done_tasks_count,
+#                    'in_process_tasks_count': in_process_tasks_count, 'active_page': 'all tasks',
+#                    'title': 'All tasks'}
+#         return render(request, 'index.html', context)
+
+
 def get_all_tasks(request):
-    model = Tasks
-    tasks = model.actions.order_by_title_length()
-    total_tasks_count = tasks.count()
+    form = SearchForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        keyword = form.cleaned_data['keyword']
+        tasks = Tasks.actions.filter(title__icontains=keyword)
+    else:
+        tasks = Tasks.actions.order_by_title_length()
+    total_tasks_count = Tasks.actions.count()
     not_started_tasks_count = Tasks.actions.not_started_count()
     done_tasks_count = Tasks.actions.done_count()
     in_process_tasks_count = Tasks.actions.in_progress_count()
-    paginator = Paginator(tasks, per_page=2, orphans=0)
-    if 'page' in request.GET:
-        page_num = request.GET['page']
-    else:
-        page_num = 1
+
+    paginator = Paginator(tasks, per_page=3, orphans=0)
+    page_num = request.GET.get('page', 1)
     page = paginator.get_page(page_num)
-    context = {'tasks': page.object_list, 'page_obj': page, 'total_tasks_count': total_tasks_count,
-               'not_started_tasks_count': not_started_tasks_count, 'done_tasks_count': done_tasks_count,
-               'in_process_tasks_count': in_process_tasks_count, 'active_page': 'all tasks', 'title': 'All tasks'}
+
+    context = {'form': form, 'tasks': page.object_list, 'page_obj': page, 'total_tasks_count': total_tasks_count,
+                'not_started_tasks_count': not_started_tasks_count, 'done_tasks_count': done_tasks_count,
+                'in_process_tasks_count': in_process_tasks_count, 'active_page': 'all tasks', 'title': 'All tasks'}
+
     return render(request, 'index.html', context)
+
+
 
 
 @require_http_methods(['GET', 'POST'])
@@ -119,21 +166,24 @@ def create_icecream(request):
     special_fields = ['theme', 'season', 'sale_start_date', 'sale_end_date', 'unique_flavors']
     if request.method == 'POST':
         icecream_form = IcecreamForm(request.POST)
-        if icecream_form.is_valid():
+        cap_form = CaptchaTestForm(request.POST)
+        if icecream_form.is_valid() and cap_form.is_valid():
             icecream_form.save()
             return redirect('taskboard:icecream')
         else:
             icecream_form = IcecreamForm(request.POST)
+            cap_form = CaptchaTestForm(request.POST)
             print('не проходит')
             context = {'message':'Введены некорректные данные', 'title': 'Create icecream',
-                       'icecream_form': icecream_form, 'active_page': 'create icecream',
+                       'icecream_form': icecream_form, 'cap_form': cap_form, 'active_page': 'create icecream',
                        'special_fields': special_fields}
             return render(request, 'create_icecream.html', context)
 
     else:
         icecream_form = IcecreamForm()
+        cap_form = CaptchaTestForm()
     context = {'icecream_form': icecream_form, 'active_page': 'create icecream',
-                   'title': 'Create icecream', 'special_fields': special_fields}
+                   'title': 'Create icecream', 'special_fields': special_fields, 'cap_form': cap_form }
     return render(request, 'create_icecream.html', context)
 
 def get_icecream(request):
@@ -188,6 +238,21 @@ def edit_task(request):
 def commit_handler():
     print('Транзакция прошла успешно!')
 
+
+def search(request):
+    if request.method == 'POST':
+        form = SearchForm(request.POST)
+        if sf.is_valid():
+            keyword = sf.cleaned_data['keyword']
+            rubric_id = sf.cleaned_data['rubric'].pk
+            bbs = Bb.objects.filter(title__icontains=keyword,
+            rubric=rubric_id)
+            context = {'bbs': bbs}
+            return render(request, 'bboard/search_results.html', context)
+    else:
+        sf = SearchForm()
+        context = {'form': sf}
+        return render(request, 'bboard/search.html', context)
 
 
 

@@ -9,6 +9,11 @@
     flex-direction: column;
     align-items: flex-start;
 }
+.search_form{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
 .buttons{
     display: flex;
     flex-direction: row;
@@ -27,4 +32,12 @@
 }
 .hidden label{
     display: none;
+}
+.custom_button{
+    margin-left: 20px;
+    border: none;
+    height: 40px;
+    padding: 10px;
+    background-color: #1e7e34;
+    color: #FFFFFF;
 }

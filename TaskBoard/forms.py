@@ -63,8 +63,8 @@ class IcecreamForm(ModelForm):
         self.fields['weight'].validators.append(validate_weight)
 
 
-# class CaptchaTestForm(Form):
-#     captcha = CaptchaField()
+class CaptchaTestForm(Form):
+    captcha = CaptchaField()
 
 
 # class UserForm(ModelForm):
@@ -76,3 +76,6 @@ class IcecreamForm(ModelForm):
 #             'password': forms.PasswordInput(),
 #             'birth_date': forms.SelectDateWidget(attrs={'class': 'date-select-class'})
 #         }
+
+class SearchForm(forms.Form):
+    keyword = forms.CharField(max_length=20, label='Искомое слово')

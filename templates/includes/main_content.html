@@ -49,7 +49,11 @@
                     <div class="cart-title mt-50">
                         <h2>All tasks</h2>
                     </div>
-
+                    <form class="search_form" method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button class="custom_button" type="submit" >Search</button>
+                    </form>
                     <div class="cart-table clearfix">
                         <table class="table table-responsive">
                             <thead>
