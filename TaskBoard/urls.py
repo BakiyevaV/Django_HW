@@ -14,6 +14,6 @@ urlpatterns = [
     path('subscribe/', save_subscribes, name='subscribe'),
     path('create_icecream/', create_icecream, name='create_icecream'),
     path('icecream/', get_icecream, name='icecream'),
-    path('edit/', edit_task, name='edit_task')
+    path('edit/', edit_task, name='edit_task'),
 
 ]

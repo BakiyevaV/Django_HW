@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -57,15 +57,41 @@ class Icecream(models.Model):
         verbose_name_plural = 'Мороженое'
         verbose_name = 'Мороженое'
         ordering = ['name']
+        abstract = True
 
     def __str__(self):
         return self.name
+
+class SpecialIcecream(Icecream):
+    vegan = models.BooleanField(default=False, verbose_name="Веганское")
+    sugar_free = models.BooleanField(default=False, verbose_name="Без добавления сахара")
+
+    class Meta:
+        verbose_name_plural = 'Специальное мороженое'
+        verbose_name = 'Специальное мороженое'
+        abstract = True
+
+class LimitedEditionIcecream(SpecialIcecream):
+    theme = models.CharField(max_length=50, verbose_name="Тематика", blank=True, null=True)
+    season = models.CharField(max_length=50, verbose_name="Сезон/Праздник", blank=True, null=True)
+    sale_start_date = models.DateField(verbose_name="Дата начала продаж", blank=True, null=True)
+    sale_end_date = models.DateField(verbose_name="Дата окончания продаж", blank=True, null=True)
+    unique_flavors = models.TextField(verbose_name="Уникальные вкусы",
+                                      help_text="Перечислите уникальные вкусы этой серии", blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = 'Ограниченная серия мороженого'
+        verbose_name = 'Ограниченная серия мороженого'
+
+    def __str__(self):
+        return f"{self.theme} - {self.season}"
+
 
 class Vendors(models.Model):
     name = models.CharField(max_length=40, verbose_name="Наименование продавца")
     address = models.CharField(max_length=200, verbose_name="Адрес")
     number = models.CharField(max_length=200, verbose_name="Номер для связи", blank=True, null=True)
-    icecream_pl = models.ManyToManyField(Icecream, through='Vendors_Icecream', through_fields=('vendor',
+    icecream_pl = models.ManyToManyField(LimitedEditionIcecream, through='Vendors_Icecream', through_fields=('vendor',
                                                                                                'icecream_position'))
     class Meta:
         verbose_name_plural = 'Продавцы'
@@ -76,7 +102,7 @@ class Vendors(models.Model):
         return self.name
 
 class Vendors_Icecream(models.Model):
-    icecream_position = models.ForeignKey(Icecream, on_delete=models.CASCADE)
+    icecream_position = models.ForeignKey(LimitedEditionIcecream, on_delete=models.CASCADE)
     vendor = models.ForeignKey(Vendors, on_delete=models.CASCADE)
     count = models.PositiveIntegerField(default=0)
 
@@ -105,27 +131,6 @@ class PassValidator():
         if len(value) < 6 or not self.check_item():
             raise ValidationError('Пароль должен содержать не менее 6 символов и не менее одной прописной буквы, строчной буквы, цифры и специального знака',
                                   code='out_of_range', params={'password': value})
-
-
-class Clients(models.Model):
-    login = models.CharField(max_length=30, unique=True)
-    password = models.CharField(max_length=30, unique=True)
-    email = models.CharField(max_length=30, unique=True, validators=[validators.RegexValidator(regex='\w[\w\.-]*\w+@\w[\w\.]*\.[a-zA-Z]{2,3}')], error_messages= {'invalid':'Введите корректный адрес электронной почты'})
-    birth_date = models.DateField()
-    is_blocked = models.BooleanField(default=False)
-
-    class Meta:
-        verbose_name_plural = 'Пользователи'
-        verbose_name = 'Пользователь'
-
-class AdvUser(models.Model):
-    is_activated = models.BooleanField(default=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.user.username
-
-
 
 
 

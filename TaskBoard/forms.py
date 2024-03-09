@@ -1,7 +1,7 @@
 
 from django.core import validators
 from django.forms import ModelForm, modelform_factory, Form, modelformset_factory, BaseModelFormSet
-from .models import Tasks, Icecream, Clients
+from .models import Tasks, Icecream, SpecialIcecream, LimitedEditionIcecream
 from django.forms.widgets import DateInput, Select
 from captcha.fields import CaptchaField
 from django.core.exceptions import ValidationError
@@ -48,10 +48,16 @@ TaskEditFormset = modelformset_factory(model=Tasks, formset=TaskFormSet, fields=
                                                 'done_date': DateInput(attrs={'type': 'date'})})
 
 class IcecreamForm(ModelForm):
+    is_limited = forms.BooleanField(label="Ограниченная серия")
     class Meta:
-        model = Icecream
-        fields = '__all__'
-        widgets = {'package': Select(attrs={'size': 3})}
+        model = LimitedEditionIcecream
+        fields = ('name', 'fabricator', 'composition', 'price', 'package', 'weight', 'expiration_date_in_days',
+                  'vegan', 'sugar_free', 'is_limited', 'theme', 'season', 'sale_start_date', 'sale_end_date',
+                  'unique_flavors')
+        widgets = {'package': Select(attrs={'size': 3}),
+                   'sale_start_date': forms.SelectDateWidget(attrs={'class': 'date-select-class'}),
+                   'sale_end_date': forms.SelectDateWidget(attrs={'class': 'date-select-class'})
+                   }
     
     def __init__(self, *args, **kwargs):
         super(IcecreamForm, self).__init__(*args, **kwargs)
@@ -63,18 +69,12 @@ class CaptchaTestForm(Form):
     captcha = CaptchaField()
 
 
-class UserForm(ModelForm):
-    class Meta:
-        model = Clients
-        fields = ('login', 'password', 'email', 'birth_date')
-        widgets = {
-            'password': forms.PasswordInput(),
-            'birth_date': forms.SelectDateWidget()
-        }
-
-class LoginForm(forms.Form):
-    login = forms.CharField(max_length=30, )
-    password = forms.CharField(max_length=30)
-    class Meta:
-        model = Clients
-        fields = ('login', 'password')
+# class UserForm(ModelForm):
+#     class Meta:
+#         model = AdvUser
+#         fields = ('username', 'password', 'email', 'birth_date', 'is_activated', 'is_staff', 'is_superuser')
+#
+#         widgets = {
+#             'password': forms.PasswordInput(),
+#             'birth_date': forms.SelectDateWidget(attrs={'class': 'date-select-class'})
+#         }

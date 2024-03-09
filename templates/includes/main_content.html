@@ -236,8 +236,29 @@
                             {% if message %}
                             <p>{{ message}}</p>
                             {% endif %}
-
-                            {{ icecream_form.as_ul }}
+                            {% for field in icecream_form %}
+                                {% if field.name in special_fields %}
+                                    <ul class="hidden">
+                                        <li class="custom-class-for-p">
+                                            {{ field.errors }}
+                                            {{ field.label_tag }} {{ field }}
+                                            {% if field.help_text %}
+                                                <p class="help">{{ field.help_text }}</p>
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                {% else %}
+                                    <ul>
+                                        <li class="custom-class-for-p">
+                                            {{ field.errors }}
+                                            {{ field.label_tag }} {{ field }}
+                                            {% if field.help_text %}
+                                                <p class="help">{{ field.help_text }}</p>
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                {% endif %}
+                            {% endfor %}
                             {{ cap_form.as_p }}
                             {% if cap_form.non_field_errors %}
                             <div class="alert alert-danger">
@@ -353,5 +374,4 @@
         <button style="margin-right: 20px; margin-left: 13px" class="btn amado-btn mb-15" type="submit">Save</button>
         <a href="{% url 'taskboard:all_tasks' %}" class="btn amado-btn active">Cancel</a>
     </form>
-
 {% endif %}

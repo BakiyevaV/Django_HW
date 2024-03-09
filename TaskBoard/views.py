@@ -1,7 +1,8 @@
+from django.contrib.auth import authenticate
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.core.paginator import Paginator
 
-from .models import Tasks, Subscribes, Icecream
+from .models import Tasks, Subscribes, Icecream, LimitedEditionIcecream
 from .forms import TaskForm, StatusForm, CaptchaTestForm, IcecreamForm, TaskEditFormset
 from django.views.decorators.http import require_http_methods
 
@@ -115,6 +116,7 @@ def save_subscribes(request):
 
 
 def create_icecream(request):
+    special_fields = ['theme', 'season', 'sale_start_date', 'sale_end_date', 'unique_flavors']
     if request.method == 'POST':
         icecream_form = IcecreamForm(request.POST)
         cap_form = CaptchaTestForm(request.POST)
@@ -125,18 +127,20 @@ def create_icecream(request):
             icecream_form = IcecreamForm(request.POST)
             cap_form = CaptchaTestForm(request.POST)
             print('не проходит')
-            context = {'message':'Введены некорректные данные', 'title': 'Create icecream', 'icecream_form': icecream_form, 'cap_form': cap_form, 'active_page': 'create icecream'}
+            context = {'message':'Введены некорректные данные', 'title': 'Create icecream',
+                       'icecream_form': icecream_form, 'cap_form': cap_form, 'active_page': 'create icecream',
+                       'special_fields': special_fields}
             return render(request, 'create_icecream.html', context)
 
     else:
         icecream_form = IcecreamForm()
         cap_form = CaptchaTestForm()
     context = {'icecream_form': icecream_form, 'cap_form': cap_form, 'active_page': 'create icecream',
-                   'title': 'Create icecream'}
+                   'title': 'Create icecream', 'special_fields': special_fields}
     return render(request, 'create_icecream.html', context)
 
 def get_icecream(request):
-    icecream = Icecream.objects.all()
+    icecream = LimitedEditionIcecream.objects.all()
     paginator = Paginator(icecream, per_page=2, orphans=0)
     if 'page' in request.GET:
         page_num = request.GET['page']
@@ -174,6 +178,10 @@ def edit_task(request):
                 form.initial['done_date'] = form.instance.done_date.strftime('%Y-%m-%d')
         context = {'formset': formset, 'title': 'Edit task', 'active_page': 'Edit task'}
         return render(request, 'edit_task.html', context)
+
+
+
+
 
 
 
