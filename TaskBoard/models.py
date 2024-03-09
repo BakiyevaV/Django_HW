@@ -2,6 +2,28 @@ from django.contrib.auth.models import User, AbstractUser
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.functions import Length
+
+
+class TasksQuerySet(models.QuerySet):
+    def order_by_title_length(self):
+        return self.annotate(title_length=Length('title')).order_by('-title_length')
+
+class TasksManager(models.Manager):
+    def get_queryset(self):
+        return TasksQuerySet(self.model, using=self._db)
+
+    def order_by_title_length(self):
+        return self.get_queryset().order_by_title_length()
+
+    def not_started_count(self):
+        return self.filter(status=Tasks.Status.not_started).count()
+
+    def done_count(self):
+        return self.filter(status=Tasks.Status.done).count()
+
+    def in_progress_count(self):
+        return self.filter(status=Tasks.Status.in_progress).count()
 
 class Tasks(models.Model):
     class Status(models.TextChoices):
@@ -9,6 +31,7 @@ class Tasks(models.Model):
         done = 'd', 'Исполнено'
         in_progress = 'p', 'На исполнении'
 
+    actions = TasksManager()
 
     implementer = models.CharField(max_length=100, verbose_name="Исполнитель", null=True, blank=True)
     author = models.CharField(max_length=100, verbose_name="Автор задачи", null=True, blank=True)
@@ -25,7 +48,7 @@ class Tasks(models.Model):
     class Meta:
         verbose_name_plural = 'Задачи'
         verbose_name = 'Задача'
-        ordering = ['-status','-deadline']
+
 
 
 class Subscribes(models.Model):
@@ -85,7 +108,6 @@ class LimitedEditionIcecream(SpecialIcecream):
 
     def __str__(self):
         return f"{self.theme} - {self.season}"
-
 
 class Vendors(models.Model):
     name = models.CharField(max_length=40, verbose_name="Наименование продавца")

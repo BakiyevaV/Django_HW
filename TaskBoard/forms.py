@@ -34,8 +34,6 @@ class TaskFormSet(BaseModelFormSet):
                 if form.cleaned_data['title']:
                     title = form.cleaned_data['title']
                     print('t'+title)
-                    if len(title) < 4:
-                        raise ValidationError('Слишком короткое наименование задачи')
                 if form.cleaned_data['done_date']:
                     done_date = form.cleaned_data['done_date'].date()
                     if done_date > date.today():
@@ -65,8 +63,8 @@ class IcecreamForm(ModelForm):
         self.fields['weight'].validators.append(validate_weight)
 
 
-class CaptchaTestForm(Form):
-    captcha = CaptchaField()
+# class CaptchaTestForm(Form):
+#     captcha = CaptchaField()
 
 
 # class UserForm(ModelForm):
