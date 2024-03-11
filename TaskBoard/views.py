@@ -157,17 +157,17 @@ def edit_task(request):
             if form.instance.done_date:
                 form.initial['done_date'] = form.instance.done_date.strftime('%Y-%m-%d')
         if formset.is_valid():
-            for form in formset:
-                try:
-                    form.save()
+            try:
+                with transaction.atomic():
+                    formset.save()
                     transaction.on_commit(commit_handler)
                     context = {'message': 'Изменения приняты', 'formset': formset, 'title': 'Edit task',
-                               'active_page': 'Edit task'}
+                           'active_page': 'Edit task'}
                     return render(request, 'edit_task.html', context)
-                except:
+            except Exception as e:
                     transaction.rollback()
-                    context = {'message': 'Что-то пошло не так', 'formset': formset, 'title': 'Edit task',
-                               'active_page': 'Edit task'}
+                    context = {'message':'Что-то пошло не так: {}'.format(e), 'formset': formset, 'title': 'Edit task',
+                                   'active_page': 'Edit task'}
                     return render(request, 'edit_task.html', context)
         else:
             context = {'message': 'Введены некорректные данные', 'formset': formset, 'title': 'Edit task',
