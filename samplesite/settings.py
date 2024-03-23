@@ -179,7 +179,7 @@ BOOTSTRAP4 = {
     'error_css_class': "has-error",
 }
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+# SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 # SESSION_ENGINE = 'django.contrib.sessions.backends.file'
 # SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 # SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
@@ -195,21 +195,21 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 # WARNING = 30
 # ERROR = 40
 
-# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 # EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 # EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
 
 
-DEFAULT_FROM_EMAIL = "webmaster@localhost"
+DEFAULT_FROM_EMAIL = "superdev@mail.ru"
 
 # только для smtp
-EMAIL_HOST = "localhost"
-EMAIL_PORT = 25
-# EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-EMAIL_TIMEOUT = 5 # В СЕКУНДАХ
+EMAIL_HOST = "sandbox.smtp.mailtrap.io"
+EMAIL_PORT = '2525'
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_TIMEOUT = 60 # В СЕКУНДАХ
 
 EMAIL_FILE_PATH = 'tmp/messages/'
 
@@ -223,23 +223,17 @@ ADMINS = [
 
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "username": "kvy",
-            "password": "QAZqaz911+",
-        }
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     },
-    "myredis": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/2",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "username": "kvy",
-            "password": "QAZqaz911+",
-        }
-    }
+    # "myredis": {
+    #     "BACKEND": "django_redis.cache.RedisCache",
+    #     "LOCATION": "redis://127.0.0.1:6379/2",
+    #     "OPTIONS": {
+    #         "CLIENT_CLASS": "django_redis.client.DefaultClient",
+    #         "username": "kvy",
+    #         "password": "QAZqaz911+",
+    #     }
+    # }
 
     #     # 'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
     #     # 'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
@@ -254,4 +248,4 @@ CACHES = {
 # CACHE_MIDDLEWARE_ALIAS = 'default'
 # CACHE_MIDDLEWARE_SECONDS = 600 #сек
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cache'

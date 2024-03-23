@@ -75,7 +75,7 @@ def is_updated(request):
     print(latest_date_local)
     return latest_date_local
 
-@condition(last_modified_func=is_updated)
+# @condition(last_modified_func=is_updated)
 def index(request):
     rubrics = Rubric.objects.all()
     bbs = Bb.objects.all()
@@ -379,11 +379,11 @@ def Search(request):
 #     # дальнейшие действия при несовпадении
 #     pass
 
-def test_email(request):
-    # em = EmailMessage(subject='Test',
-    #                   body='Test',
-    #                   attachments=[('password.txt', '123456789', 'text/plain')],
-    #                   to=['user@user.com'])
+# def test_email(request):
+#     em = EmailMessage(subject='Test',
+#                       body='Test',
+#                       attachments=[('password.txt', '123456789', 'text/plain')],
+#                       to=['kim.v.y@mail.ru'])
 
 
     # em = EmailMessage(subject='Файл',
@@ -395,6 +395,7 @@ def test_email(request):
     # s = render_to_string('email/letter.txt', context)
     # em = EmailMessage(subject='Оповещение', body=s, to=['user@user.com'], headers={'Content-Type': 'text/plain; charset=utf-8'})
     # em.send()
+    # print('sended')
 
     # con = get_connection()
     # con.open()
@@ -438,10 +439,13 @@ def test_email(request):
     # user = User.objects.get(username='admin')
     # user.email_user('Test1', 'Test1', fail_silently=True)
 
-    mail_admins('Test1', 'Test1')
+    # return redirect('bboard:index')
 
+def test_email(request):
+    print('test_email')
+    em = EmailMessage(subject='Test', body='Test', to=['kim.v.y@mail.ru'])
+    em.send()
+    print('sended')
     return redirect('bboard:index')
-
-
 
 

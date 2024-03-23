@@ -26,8 +26,6 @@ urlpatterns = [
     path('year/<int:year>/', BbRedirectView.as_view(), name='redirect'),
     # path('<int:year>/<int:month>/', BbMonthView.as_view(), name='month'),
     path('mail/', test_email, name='test_email'),
-
-
     path('accounts/logout/', LogoutView.as_view(), name='logout'),
 
 

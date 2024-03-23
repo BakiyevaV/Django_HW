@@ -2,20 +2,24 @@ import json
 import datetime
 import calendar
 
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.http import HttpHeaders
 from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, ArchiveIndexView, MonthArchiveView
 from django.views.generic.edit import CreateView
 from django.contrib.auth.views import LoginView
 from django.views.generic.list import MultipleObjectTemplateResponseMixin, ListView
 
+from bboard.models import Rubric, Bb
 from .models import Clients
-from .forms import UserForm, MyLoginForm
+from .forms import UserForm, MyLoginForm, changePasswordForm
 from django.shortcuts import redirect
+from django.core.mail import EmailMessage, get_connection
 
 
 class UserCreateView(CreateView):
@@ -151,6 +155,82 @@ class UserDetailView(DetailView):
 
 # admin.set_password('newpassword')
 # admin.save()
+
+def reset_pass(request):
+    staff = User.objects.filter(is_staff=True)
+    messages = []
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        if email:
+            user = User.objects.filter(email=email).first()
+            if user is not None:
+                user.set_password(email)
+                user.save()
+                context = {'user': user.username, 'pk': user.pk }
+                letter = render_to_string('email/letter.html', context)
+                user_email = EmailMessage(
+                    subject='Оповещение',
+                    body=letter,
+                    to=[user.email]
+                )
+                user_email.content_subtype = 'html'  # Устанавливаем тип содержимого письма
+                messages.append(user_email)
+
+                for employee in staff:
+                    messages.append(EmailMessage(
+                        subject='Оповещение',
+                        body=f'Пользователь {user.username} забыл пароль',
+                        to=[employee.email]
+                    ))
+                connection = get_connection()
+                connection.open()
+                connection.send_messages(messages)
+                connection.close()
+
+                return redirect(reverse('accounts:login'))
+            else:
+                context = {'error_message': 'Пользователь с указанным email не найден!'}
+                return render(request, 'reset_pass.html', context)
+        else:
+            context = {'error_message': 'Введите email!'}
+            return render(request, 'reset_pass.html', context)
+    return render(request, 'reset_pass.html')
+
+def new_pass(request, pk):
+    template_name = 'change_password.html'
+    user = User.objects.filter(pk=pk).first()
+    if user is None:
+        return render(request, 'some_error_template.html', {'error_message': 'Пользователь не найден.'})
+
+    if request.method == 'POST':
+        form = changePasswordForm(request.POST)
+        if form.is_valid():
+            password1 = form.cleaned_data.get("password")
+            password2 = form.cleaned_data.get("confirm_password")
+            if password1 == password2:
+                user.set_password(password1)
+                user.save()
+                print(user.username)
+                user = authenticate(request, username=user.username, password=password1)
+                if user is None:
+                    print('Не удалось авторизовать пользователя после смены пароля.')
+                else:
+                    print(f'Пользователь {user.username} успешно авторизован!')
+                    login(request, user)
+                    return redirect('bboard:index')
+            else:
+
+                context = {'error_message': 'Пароли должны быть одинаковыми', 'form': form}
+                return render(request, template_name, context)
+        else:
+
+            context = {'error_message': 'Пароль не соответствует политике безопасности', 'form': form}
+            return render(request, template_name, context)
+
+    form = changePasswordForm()
+    context = {'form': form}
+    return render(request, template_name, context)
+
 
 
 

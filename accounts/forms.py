@@ -16,14 +16,6 @@ class UserForm(ModelForm):
         }
 
 
-def aauthenticate(request, username, password):
-    pass
-
-
-def set_password(password):
-    pass
-
-
 class MyLoginForm(forms.Form):
     login = forms.CharField(max_length=30, )
     password = forms.CharField(max_length=30, )
@@ -46,5 +38,10 @@ class MyLoginForm(forms.Form):
 
     def get_user(self):
         return self.user
+
+class changePasswordForm(forms.Form):
+    password = forms.CharField(max_length=30, label='Введите новый пароль' )
+    confirm_password = forms.CharField(max_length=30, label='Повторите пароль')
+
 
 
