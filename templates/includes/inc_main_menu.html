@@ -1,0 +1,17 @@
+<div class = "menu">
+    {% if request.user.is_authenticated %}
+        <a href="{% url 'bboard:index' %}">На главную</a>
+        <a href="{% url 'bboard:add' %}">Подать объявление</a>
+        <a href="{% url 'accounts:registration' %}">Регистрация</a>
+        <a href="{% url 'accounts:login' %}">Войти</a>
+        <p>Текущий пользователь:{{ request.user.username|upper }}</p>
+        <a href="{% url 'bboard:logout' %}">Выйти</a>
+    {% else %}
+        <a href="{% url 'bboard:index' %}">На главную</a>
+        <a href="{% url 'bboard:add' %}">Подать объявление</a>
+        <a href="{% url 'accounts:registration' %}">Регистрация</a>
+        <a href="{% url 'accounts:login' %}">Войти</a>
+        <p>Текущий пользователь:ГОСТЬ</p>
+        <a href="{% url 'bboard:logout' %}">Выйти</a>
+    {% endif %}
+</div>

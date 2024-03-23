@@ -1,0 +1,41 @@
+{% extends "layout/basic.html" %}
+{% load bbcode_tags %}
+{% block title %}{{bb.title}}{% endblock %}
+
+{% block content %}
+<h2>{{bb.get_kind_display}}:</h2>
+<h2>{{bb.title|capfirst}}</h2>
+<h1>{{bb.price|default:"У товара нет цены"}}</h1>
+<h3>bbcode bb.content</h3>
+{% bbcode bb.content %}
+
+<h3>bb.content|bbcode|safe</h3>
+{{ bb.content|bbcode|safe }}
+
+<h3>bb.content.rendered</h3>
+{{ bb.content.rendered }} {# если прописали в модели #}
+
+
+<h3>{{bb.content}}</h3>
+<h4>{{bb.published}}<br></h4>
+
+<h4>Комментарии:</h4>
+<form  method = "post" action="{% url 'bboard:c_create' bb_id=bb.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Добавить комментарий">
+</form>
+<div class = "comments">
+    {% for comment in comments %}
+    <form  method = "post" action="{% url 'bboard:delete_comment' comment_id=comment.pk bb_id=bb.pk %}">
+        {% csrf_token %}
+        <span>Автор:{{comment.comment_creator}} ({{comment.issue_date}})</span>
+        <div class = "comment_row">
+            <textarea style="width: 1000px;" readonly>{{comment.comment}}</textarea>
+            <input type="submit" value="Удалить">
+        </div>
+        </form>
+    {% endfor %}
+</div>
+    <a href="{% url 'bboard:update' bb.pk %}"><button >Редактировать</button></a>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "layout/basic.html" %}
+
+{% block title %}Результаты{% endblock %}
+
+{% block content %}
+<h2>Результаты</h2>
+    <p>{{ current_rubric.name }}</p>
+    <p>{{ keyword }}</p>
+
+    {% for bb in bbs %}
+        <div>
+            <h2>{{ bb.title }}</h2>
+            <p>{{ bb.content }}</p>
+            <p>{{ bb.published|date:"d.m.Y H:i:s" }}</p>
+        </div>
+    {% endfor %}
+{% endblock %}

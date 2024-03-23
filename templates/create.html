@@ -1,0 +1,36 @@
+{% extends "layout/basic.html" %}
+{% load bootstrap4 %}
+
+{% block title %}Добавление объявления{% endblock %}
+{% block content %}
+    {% if message %}
+        <h2>{{ message }}</h2>
+    {% else %}
+            <h2>Добавление объявления</h2>
+                {% bootstrap_messages %}
+                <form method="post">
+                    {% csrf_token %}
+            {#        {% bootstrap_field form.title placeholder='что подаем?' addon_before='Какой-то текст'%}#}
+                    {% bootstrap_form form layout='inline' field_class='col-md-10'%}
+            {#        {% bootstrap_form form %}#}
+            {#        {% buttons submit='Добавить' %}{% endbuttons %}#}
+                    {% bootstrap_button content='Добавить' button_type='submit' button_class='btn-secondary' %}
+                </form>
+
+
+    {% endif %}
+{% endblock %}
+
+
+{#{% if form.is_multipart %}#}
+{#    <form  method="post" enctype="multipart/form-data">#}
+{#{% else %}#}
+{#    <form  method="post">#}
+{#{% endif %}#}
+{# {% csrf_token %}#}
+{#    <table>#}
+{#        {{ form }}#}
+{#    </table>#}
+{##}
+{#    <input type="submit" value="Добавить">#}
+{#    </form>#}

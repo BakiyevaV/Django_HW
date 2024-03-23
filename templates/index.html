@@ -1,0 +1,33 @@
+
+{% extends "layout/basic.html" %}
+
+{% load custom_filters %}
+{% load bootstrap4 %}
+
+
+
+{% block content %}
+
+    <p>
+    {% for d in date_list %}
+        <a href="{% url 'bboard:month' year=d.year month=d.month|month_to_number  %}">
+            {{ d.year }} - {{ d.month }}</a>
+    {% endfor %}
+    </p>
+<div class="grid">
+{% for bb in bbs %}
+ <div class = 'content'>
+    <h2>
+        <a href="{% url 'bboard:detail' bb_id=bb.pk %}">
+            {{ bb.title_and_price }}</a>
+    </h2>
+    <p>{{ bb.content }}</p>
+    <p>
+        <a href="{% url 'bboard:by_rubric' bb.rubric.pk %}">
+            {{ bb.rubric.name }}</a>
+    </p>
+    <p>{{ bb.published|date:"d.m.Y H:i:s" }}</p>
+</div>
+{% endfor %}
+</div>
+{% endblock %}

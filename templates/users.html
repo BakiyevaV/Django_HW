@@ -1,0 +1,36 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <title>All Users</title>
+</head>
+<body class = "users_body">
+    <header>
+        <a href="{% url 'bboard:index' %}">Главная страница</a>
+    </header>
+        <p>
+            {% for period in date_list %}
+                <a href="{% url 'accounts:period' year=period.year month=period.month|month_to_number  %}">
+                {{ period.year }}:{{ period.month }}</a>
+            {% endfor %}
+        </p>
+        <div class = "users">
+        {% for user in users %}
+            <form action="{% url 'accounts:user_detail' user.pk %}">
+                <div class = "user">
+                    <p>Логин: {{user.login}}</p>
+                    <p>e-mail: {{user.email}}</p>
+                    <p>Дата-рождения: {{user.birth_date}}</p>
+                    <p>Статус: {% if user.is_blocked == False %} Активен {% else %} Заблокирован {% endif %}</p>
+                    <input type="submit" value="Подробнее">
+                </div>
+            </form>
+        {% endfor %}
+        </div>
+
+</body>
+</html>

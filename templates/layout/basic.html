@@ -1,0 +1,42 @@
+{% load static %}
+{% load bootstrap4 %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Главная{% endblock %} :: Доска объявлений</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+
+    <link rel="stylesheet" href="{{ STATIC_URL }}style.css">
+</head>
+<body class = 'body'>
+{% include 'includes/inc_main_menu.html' %}
+    <div class = 'rubrics'>
+     {% for rubric in rubrics %}
+        {% with bb_count=rubric.cnt %}
+        <a href="{% url 'bboard:by_rubric' rubric.pk %}{#{ rubric.get_absolute_url }#}">
+            {% filter force_escape|upper %}
+            {{ rubric }} ({{bb_count}})
+            {% endfilter %}
+        </a>
+        {% endwith %}
+    {% endfor %}
+    </div>
+    <div class = "main">
+        <div class = 'top_ann'>Ваши объявления могут быть в топе</div>
+        <section>
+            {% block content %}
+            <p>Контент из basic.html</p>
+            {% endblock %}
+        </section>
+        <div class = 'advert'>Здесь может быть ваша реклама</div>
+    </div>
+    <footer>&copy;1982 &ndash; {% now 'Y' %}
+        <a href = "{% url 'bboard:about' %}">О нас </a>
+        <a href = "{% url 'bboard:contacts' %}">Контакты </a>
+    </footer>
+
+    {% bootstrap_javascript jquery='full' %}
+</body>
+</html>
