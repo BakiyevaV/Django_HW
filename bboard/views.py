@@ -33,6 +33,8 @@ from django.forms import modelformset_factory, inlineformset_factory
 from django.core.cache import cache, caches
 from django.views.decorators.http import condition
 from django.utils import timezone
+from django.core.signing import Signer, BadSignature
+
 
 # class Bbslist(ListView):
 #     model = Bb
@@ -255,25 +257,41 @@ class BbEditView(UpdateView):
         messages.add_message(self.request, messages.SUCCESS, 'Изменено')
         return context
 
-def edit(request, bb_id):
-    bb = Bb.objects.get(pk=bb_id)
-    print(bb)
+def edit(request, pk):
+    bb = Bb.objects.get(pk=pk)
     if request.method == 'POST':
+        signer = Signer()
         bbf = BbForm(request.POST, instance=bb)
         if bbf.is_valid():
             if bbf.has_changed():
-                bbf.save()
-                return HttpResponseRedirect(reverse('bboard:by_rubric'), kwargs={'rubric_id': bbf.cleaned_data['rubric'].pk})
+                signed_pk = request.POST.get('signed_pk')
+                try:
+                    original_pk = signer.unsign(signed_pk)
+                    assert str(bb.pk) == original_pk
+                    bbf.save()
+                    context = {'form': bbf}
+                    messages.add_message(request, messages.SUCCESS, 'Успешно сохранено')
+                    print('ключ', original_pk)
+                    return render(request, 'update.html', context)
+                except(BadSignature, AssertionError):
+                    context = {'form': bbf}
+                    messages.add_message(request, messages.FIRE, 'Неверная подпись!')
+                    return render(request, 'update.html', context)
             else:
-                return HttpResponseRedirect(reverse('bboard:index'))
+                context = {'form': bbf}
+                messages.add_message(request, messages.WARNING, 'Ничего не изменилось!')
+                return render(request, 'update.html', context)
         else:
             context = {'form': bbf}
+            messages.add_message(request, messages.FIRE, 'Нельзя такое сохранять!')
             return render(request, 'update.html', context)
     else:
        if request.user.has_perm('bboard.add_bb'):
+            signer = Signer()
             bbf = BbForm(instance=bb)
-            print(bbf['title'].value())
-            context = {'form': bbf}
+            signed_pk = signer.sign(pk)
+            print('подпись',signed_pk)
+            context = {'form': bbf, 'signed_pk': signed_pk}
             return render(request, 'update.html', context)
        else:
            return render(request, 'update.html', {'message': 'Нет доступа на редактирование'})

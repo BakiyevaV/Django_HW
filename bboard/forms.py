@@ -26,7 +26,6 @@ class BbForm(ModelForm):
         if val == 'Прошлогодний снег':
             print('к продаже не допускается')
             raise ValidationError('к продаже не допускается')
-        print('хрень какая-то')
         return val
 
     def clean(self):

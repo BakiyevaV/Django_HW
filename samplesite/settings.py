@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import environ
+from django.contrib.messages import constants as messages
+
 env = environ.Env()
 environ.Env.read_env()
 
@@ -88,8 +90,8 @@ TEMPLATES = [
     },
 ]
 
+MESSAGE_LEVEL = messages.DEBUG
 WSGI_APPLICATION = 'samplesite.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

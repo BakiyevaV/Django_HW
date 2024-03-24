@@ -4,35 +4,41 @@
 
 {% block content %}
 <h2>Изменение объявления</h2>
-    {% if message %}
-        <h2>{{ message }}</h2>
-    {% else %}
-        {% if form.is_multipart %}
-            <form  method = "post" enctype="multipart/form-data">
-        {% else %}
-            <form  method = "post">
-        {% endif %}
-            # один контроллер отрисовывает форму, а второй обрабатывает данные с формы. Если контроллер один, то action не нужен
-            {% csrf_token %}
-            {% for hidden in form.hidden_fields %}
-                {{ hidden }}
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {{ message }}
+                </li>
             {% endfor %}
-            {% if form.non_fields_errors %}
-                <ul>
-                    {% for error in form.non_fields_errors %}
-                        <li>{{ error|escape }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            {% for field in form.visible_fields %}
-                {% if field.errors %}
-                       {% for error in field.errors %}
-                           <li>{{ error|escape }}</li>
-                        {% endfor %}
-                {% endif %}
-                <p>{{ field.label_tag }}<br>{{ field }}<br>{{ field.help_text }}</p>
-            {% endfor %}
-            <input type="submit" value="Изменить">
-            </form>
+        </ul>
     {% endif %}
+    {% if form.is_multipart %}
+        <form  method = "post" enctype="multipart/form-data">
+    {% else %}
+        <form  method = "post">
+    {% endif %}
+        {% csrf_token %}
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+        {% if form.non_fields_errors %}
+            <ul>
+                {% for error in form.non_fields_errors %}
+                    <li>{{ error|escape }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% for field in form.visible_fields %}
+            {% if field.errors %}
+                   {% for error in field.errors %}
+                       <li>{{ error|escape }}</li>
+                    {% endfor %}
+            {% endif %}
+            <p>{{ field.label_tag }}<br>{{ field }}<br>{{ field.help_text }}</p>
+        {% endfor %}
+        <input type="hidden" name="signed_pk" value="{{ signed_pk }}">
+        <input type="submit" value="Изменить">
+        </form>
+
 {% endblock %}
